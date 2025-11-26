@@ -1,8 +1,9 @@
 'use client';
 
-import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronRight, Search, Bell, Settings } from "lucide-react";
+import { ChevronRight, Search, Bell, Settings, LogOut, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -16,7 +17,22 @@ const routeNames: Record<string, string> = {
 
 export function Header() {
   const pathname = usePathname() || '/';
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const currentRoute = routeNames[pathname] || 'Dashboard';
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const getBreadcrumbs = () => {
     const paths = pathname.split('/').filter(Boolean);
@@ -76,6 +92,21 @@ export function Header() {
           {/* Settings */}
           <Button variant="ghost" size="icon">
             <Settings className="h-5 w-5" />
+          </Button>
+
+          {/* Logout */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            title="Logout"
+          >
+            {isLoggingOut ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <LogOut className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
