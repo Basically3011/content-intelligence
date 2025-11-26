@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { createHash } from 'crypto'
 
 // Session cookie name (must match lib/auth.ts)
 const SESSION_COOKIE = 'ci_session'
@@ -8,22 +7,40 @@ const SESSION_COOKIE = 'ci_session'
 // Routes that don't require authentication
 const publicRoutes = ['/login', '/api/auth/login', '/api/auth/logout']
 
-// API routes that should be protected
-const protectedApiRoutes = ['/api/content', '/api/filters', '/api/coverage', '/api/classification', '/api/nurture-coverage', '/api/test-scoring']
+// Convert string to ArrayBuffer for Web Crypto API
+function stringToArrayBuffer(str: string): ArrayBuffer {
+  const encoder = new TextEncoder()
+  return encoder.encode(str).buffer
+}
 
-// Verify session hash (simplified version for middleware - Edge runtime compatible)
-function verifySession(cookieValue: string, secret: string): boolean {
+// Convert ArrayBuffer to hex string
+function arrayBufferToHex(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer)
+  return Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+// Verify session hash using Web Crypto API (Edge runtime compatible)
+async function verifySession(cookieValue: string, secret: string): Promise<boolean> {
   const [token, hash] = cookieValue.split('.')
 
   if (!token || !hash) {
     return false
   }
 
-  const expectedHash = createHash('sha256').update(token + secret).digest('hex')
-  return hash === expectedHash
+  try {
+    // Use Web Crypto API for SHA-256 hashing
+    const data = stringToArrayBuffer(token + secret)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const expectedHash = arrayBufferToHex(hashBuffer)
+    return hash === expectedHash
+  } catch {
+    return false
+  }
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Allow public routes
@@ -50,7 +67,7 @@ export function middleware(request: NextRequest) {
   const secret = process.env.AUTH_SECRET || 'default-secret-change-me'
 
   // Verify session
-  const isAuthenticated = sessionCookie?.value && verifySession(sessionCookie.value, secret)
+  const isAuthenticated = sessionCookie?.value && await verifySession(sessionCookie.value, secret)
 
   // Handle unauthenticated requests
   if (!isAuthenticated) {
