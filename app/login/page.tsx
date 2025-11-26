@@ -36,8 +36,8 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('[Login] Login successful, redirecting...')
-        router.push('/')
-        router.refresh()
+        // Use window.location for hard redirect to ensure cookie is sent
+        window.location.href = '/'
       } else {
         console.log('[Login] Login failed:', data.error)
         setError(data.error || 'Login failed')
