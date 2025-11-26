@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model content_inventory {
+  inventory_id                                                                                 BigInt                    @id @default(autoincrement())
+  language_node_id                                                                             String                    @unique(map: "idx_content_inventory_language_node")
+  node_id                                                                                      String
+  language                                                                                     String
+  url                                                                                          String
+  group_key                                                                                    String?
+  title                                                                                        String?
+  content_type_machine                                                                         String?
+  topic                                                                                        String?
+  is_pdg_program_content                                                                       Boolean?
+  is_content_gated                                                                             Boolean?
+  is_nurture_content                                                                           Boolean?
+  ann_stage                                                                                    String?
+  serial_number                                                                                String?
+  ann_conversation_tracks                                                                      String[]
+  ann_products                                                                                 String[]
+  ann_solutions                                                                                String[]
+  ann_raw                                                                                      Json
+  raw_markdown                                                                                 String?
+  markdown_hash                                                                                String?
+  word_count                                                                                   Int?
+  crawled_at                                                                                   DateTime?                 @db.Timestamptz(6)
+  crawl_status                                                                                 String?
+  seo_onpage_score                                                                             Decimal?                  @db.Decimal(6, 2)
+  seo_readability_flesch                                                                       Decimal?                  @db.Decimal(6, 2)
+  seo_internal_links                                                                           Int?
+  seo_external_links                                                                           Int?
+  seo_images_count                                                                             Int?
+  seo_flag_low_content                                                                         Boolean?
+  seo_flag_low_readability                                                                     Boolean?
+  seo_flag_title_issue                                                                         Boolean?
+  seo_flag_canonical_issue                                                                     Boolean?
+  seo_flag_url_issue                                                                           Boolean?
+  seo_total_keywords                                                                           Int?
+  seo_top10_keywords                                                                           Int?
+  seo_top30_keywords                                                                           Int?
+  seo_organic_etv                                                                              Float?
+  seo_organic_estimated_ads_cost                                                               Float?
+  seo_last_checked_at                                                                          DateTime?                 @db.Timestamptz(6)
+  seo_onpage_raw                                                                               Json?
+  seo_keywords_raw                                                                             Json?
+  active_persona_mapping_id                                                                    BigInt?
+  active_scoring_id                                                                            BigInt?
+  status_crawl                                                                                 String?
+  status_persona_mapping                                                                       String?
+  status_scoring                                                                               String?
+  created_at                                                                                   DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at                                                                                   DateTime?                 @default(now()) @db.Timestamptz(6)
+  cms_created_at                                                                               DateTime?                 @db.Timestamptz(6)
+  cms_updated_at                                                                               DateTime?                 @db.Timestamptz(6)
+  cms_status                                                                                   String?
+  cms_current_moderation_stage                                                                 String?
+  content_mix_category                                                                         String?
+  content_mix_source                                                                           String?
+  content_mix_assigned_by                                                                      String?
+  content_mix_assigned_at                                                                      DateTime?                 @db.Timestamptz(6)
+  content_mix_notes                                                                            String?
+  cms_actions                                                                                  String?
+  cms_actions_updated_at                                                                       DateTime?                 @db.Timestamptz(6)
+  content_persona_mapping_content_inventory_active_persona_mapping_idTocontent_persona_mapping content_persona_mapping?  @relation("content_inventory_active_persona_mapping_idTocontent_persona_mapping", fields: [active_persona_mapping_id], references: [mapping_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_active_persona")
+  content_scoring_content_inventory_active_scoring_idTocontent_scoring                         content_scoring?          @relation("content_inventory_active_scoring_idTocontent_scoring", fields: [active_scoring_id], references: [scoring_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_active_scoring")
+  content_persona_mapping_content_persona_mapping_inventory_idTocontent_inventory              content_persona_mapping[] @relation("content_persona_mapping_inventory_idTocontent_inventory")
+  content_scoring_content_scoring_inventory_idTocontent_inventory                              content_scoring[]         @relation("content_scoring_inventory_idTocontent_inventory")
+
+  @@index([group_key], map: "idx_content_inventory_group_key")
+  @@index([language, ann_stage], map: "idx_content_inventory_lang_stage")
+  @@index([language_node_id], map: "idx_content_inventory_language_node_id")
+  @@index([node_id, language], map: "idx_content_inventory_node_lang")
+  @@index([seo_onpage_score], map: "idx_content_inventory_seo_score")
+  @@index([status_crawl], map: "idx_content_inventory_status_crawl")
+  @@index([url], map: "idx_content_inventory_url")
+}
+
+model content_persona_mapping {
+  mapping_id                                                                             BigInt              @id @default(autoincrement())
+  inventory_id                                                                           BigInt
+  persona_primary_id                                                                     String?
+  persona_primary_label                                                                  String?
+  persona_secondary_id                                                                   String?
+  persona_secondary_label                                                                String?
+  buying_stage                                                                           String?
+  is_content_gap_or_misfit                                                               Boolean?
+  key_pain_point                                                                         String?
+  rationale                                                                              String?
+  content_type_inferred                                                                  String?
+  input_markdown_hash                                                                    String?
+  model_name                                                                             String?
+  prompt_version                                                                         String?
+  lang_detected                                                                          String?
+  source                                                                                 String?
+  raw_json                                                                               Json?
+  status                                                                                 String?
+  created_at                                                                             DateTime?           @default(now()) @db.Timestamptz(6)
+  created_by                                                                             String?
+  notes                                                                                  String?
+  content_inventory_content_inventory_active_persona_mapping_idTocontent_persona_mapping content_inventory[] @relation("content_inventory_active_persona_mapping_idTocontent_persona_mapping")
+  content_inventory_content_persona_mapping_inventory_idTocontent_inventory              content_inventory   @relation("content_persona_mapping_inventory_idTocontent_inventory", fields: [inventory_id], references: [inventory_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_persona_inventory")
+
+  @@index([inventory_id], map: "idx_persona_inventory")
+  @@index([persona_primary_id, buying_stage], map: "idx_persona_primary_stage")
+}
+
+model content_scoring {
+  scoring_id                                                             BigInt              @id @default(autoincrement())
+  inventory_id                                                           BigInt
+  content_type_llm                                                       String?
+  score_structure                                                        Decimal?            @db.Decimal(4, 2)
+  score_clarity                                                          Decimal?            @db.Decimal(4, 2)
+  score_relevance                                                        Decimal?            @db.Decimal(4, 2)
+  score_conversion                                                       Decimal?            @db.Decimal(4, 2)
+  score_overall_weighted                                                 Decimal?            @db.Decimal(4, 2)
+  flag_is_wall_of_text                                                   Boolean?
+  flag_has_transactional_cta                                             Boolean?
+  flag_has_mixed_pronouns                                                Boolean?
+  flag_is_company_centric                                                Boolean?
+  flag_has_case_study_metrics                                            Boolean?
+  flag_has_screenshots                                                   Boolean?
+  flag_has_certs_with_year                                               Boolean?
+  flag_has_api_docs                                                      Boolean?
+  flag_has_sla_terms                                                     Boolean?
+  audit_executive_summary                                                String?
+  audit_primary_strengths                                                Json?
+  audit_critical_weaknesses                                              Json?
+  audit_recommendations                                                  Json?
+  input_markdown_hash                                                    String?
+  model_name                                                             String?
+  prompt_version                                                         String?
+  raw_json                                                               Json?
+  status                                                                 String?
+  created_at                                                             DateTime?           @default(now()) @db.Timestamptz(6)
+  created_by                                                             String?
+  notes                                                                  String?
+  content_inventory_content_inventory_active_scoring_idTocontent_scoring content_inventory[] @relation("content_inventory_active_scoring_idTocontent_scoring")
+  content_inventory_content_scoring_inventory_idTocontent_inventory      content_inventory   @relation("content_scoring_inventory_idTocontent_inventory", fields: [inventory_id], references: [inventory_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_scoring_inventory")
+
+  @@index([inventory_id], map: "idx_scoring_inventory")
+  @@index([score_overall_weighted], map: "idx_scoring_overall")
+}

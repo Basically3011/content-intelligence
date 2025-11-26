@@ -1,0 +1,131 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ExternalLink } from "lucide-react";
+import { ContentItem } from "@/lib/api-client";
+
+interface ContentCardProps {
+  item: ContentItem
+  onClick?: () => void
+}
+
+export function ContentCard({ item, onClick }: ContentCardProps) {
+  const score = item.seo_onpage_score ? parseFloat(item.seo_onpage_score) : null
+  const qualityScore = item.content_scoring_content_inventory_active_scoring_idTocontent_scoring?.score_overall_weighted
+    ? parseFloat(item.content_scoring_content_inventory_active_scoring_idTocontent_scoring.score_overall_weighted)
+    : null
+
+  const persona = item.content_persona_mapping_content_inventory_active_persona_mapping_idTocontent_persona_mapping?.persona_primary_label
+  const stage = item.content_persona_mapping_content_inventory_active_persona_mapping_idTocontent_persona_mapping?.buying_stage
+
+  const getScoreColor = (score: number) => {
+    if (score >= 90) return 'bg-success/10 text-success border-success/20'
+    if (score >= 70) return 'bg-warning/10 text-warning border-warning/20'
+    return 'bg-error/10 text-error border-error/20'
+  }
+
+  return (
+    <Card
+      className="hover:shadow-lg transition-all cursor-pointer group"
+      onClick={onClick}
+    >
+      <CardHeader>
+        <div className="flex justify-between items-start gap-2 mb-2">
+          <div className="flex gap-2 flex-wrap">
+            {item.content_type_machine && (
+              <Badge variant="outline" className="text-xs">
+                {item.content_type_machine}
+              </Badge>
+            )}
+            {item.language && (
+              <Badge variant="secondary" className="text-xs uppercase">
+                {item.language}
+              </Badge>
+            )}
+          </div>
+          {score !== null && (
+            <Badge
+              variant="outline"
+              className={`text-xs font-semibold ${getScoreColor(score)}`}
+            >
+              {score.toFixed(0)}
+            </Badge>
+          )}
+        </div>
+
+        <CardTitle className="text-base line-clamp-2 group-hover:text-brand transition-colors">
+          {item.title || 'Untitled Content'}
+        </CardTitle>
+
+        <CardDescription className="text-sm flex items-center gap-1">
+          <ExternalLink className="h-3 w-3" />
+          <span className="truncate">{new URL(item.url).hostname}</span>
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <div className="space-y-2">
+          {/* Persona and Stage */}
+          {(persona || stage) && (
+            <div className="flex gap-2 flex-wrap text-xs">
+              {persona && (
+                <div className="flex items-center gap-1">
+                  <span className="text-muted-foreground">Persona:</span>
+                  <span className="font-medium">{persona}</span>
+                </div>
+              )}
+              {stage && (
+                <div className="flex items-center gap-1">
+                  <span className="text-muted-foreground">Stage:</span>
+                  <span className="font-medium">{stage}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Scores */}
+          <div className="flex gap-4 text-xs text-muted-foreground pt-2 border-t">
+            {score !== null && (
+              <div className="flex items-center gap-1">
+                <span>SEO:</span>
+                <span className="font-medium text-foreground">{score.toFixed(1)}</span>
+              </div>
+            )}
+            {qualityScore !== null && (
+              <div className="flex items-center gap-1">
+                <span>Quality:</span>
+                <span className="font-medium text-foreground">{qualityScore.toFixed(1)}</span>
+              </div>
+            )}
+            {item.cms_status && (
+              <div className="flex items-center gap-1">
+                <span>Status:</span>
+                <span className="font-medium text-foreground capitalize">{item.cms_status}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export function ContentCardSkeleton() {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-start mb-2">
+          <div className="h-5 w-20 bg-muted rounded animate-pulse" />
+          <div className="h-5 w-12 bg-muted rounded animate-pulse" />
+        </div>
+        <div className="h-6 w-full bg-muted rounded animate-pulse" />
+        <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <div className="h-4 w-full bg-muted rounded animate-pulse" />
+          <div className="h-4 w-2/3 bg-muted rounded animate-pulse" />
+        </div>
+      </CardContent>
+    </Card>
+  )
+}

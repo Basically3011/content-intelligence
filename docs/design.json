@@ -1,0 +1,553 @@
+{
+  "meta": {
+    "name": "Analytics Dashboard Design System",
+    "version": "1.0.0",
+    "source_reference": "Dashboard screenshot provided by user (modern analytics SaaS UI)",
+    "purpose": "High-level design and style guide so AI and humans can recreate the same look & feel across this project.",
+    "tone": [
+      "calm",
+      "professional",
+      "data-focused",
+      "minimal but friendly"
+    ]
+  },
+  "design_principles": {
+    "clarity_over_complexity": "Always prefer clear hierarchy, generous whitespace, and easily scannable information. Avoid heavy borders and noisy decoration.",
+    "comfortably_dense_data": "The interface should show a lot of information, but never feel cramped. Use tight component layouts inside cards, but keep card-to-card spacing generous.",
+    "soft_contrast": "Use a dark sidebar and light content surface with soft grays instead of pure black/white. Contrast comes from typography weight and color accents more than from heavy borders.",
+    "primary_actions_pop": "Primary actions use a saturated blue pill/button and stand out clearly against the neutral background. Secondary actions are quiet and outlined/text-only.",
+    "card_as_canvas": "Most content lives inside cards on a light shell. Cards group related information with consistent padding, subtle shadows, and rounded corners.",
+    "friendly_data_visualization": "Numbers and statuses should feel approachable: rounded shapes, soft color accents, and simple micro-interactions (hover, focus).",
+    "consistent_rhythm": "All spacing is drawn from a small, harmonious scale (4/8px steps). Align content to a grid so vertical and horizontal rhythms feel deliberate.",
+    "subtle_branding": "The primary blue and avatar accents provide personality, but the overall palette remains neutral to let the data be the hero."
+  },
+  "foundations": {
+    "grid_and_layout": {
+      "page_background_color": "#F5F6FA",
+      "max_content_width": 1440,
+      "columns": 12,
+      "column_gutter": 24,
+      "outer_margin": 32,
+      "content_shell": {
+        "background": "#FFFFFF",
+        "border_radius": 20,
+        "padding_x": 32,
+        "padding_y": 24,
+        "shadow_token": "shadow-elevation-2",
+        "description": "Main white panel centered on a light gray background. The shadow is subtle; the shell should feel like a floating sheet of paper."
+      }
+    },
+    "spacing": {
+      "scale_tokens": {
+        "0": 0,
+        "xs": 4,
+        "sm": 8,
+        "md": 12,
+        "lg": 16,
+        "xl": 20,
+        "2xl": 24,
+        "3xl": 32,
+        "4xl": 40
+      },
+      "usage": {
+        "page_padding": "3xl",
+        "card_padding_x": "2xl",
+        "card_padding_y": "lg",
+        "between_cards": "2xl",
+        "section_gap_vertical": "2xl",
+        "form_control_gap": "md",
+        "table_row_vertical_padding": "sm",
+        "icon_to_label_gap": "sm",
+        "chip_horizontal_padding": "md",
+        "avatar_to_text_gap": "md"
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "base": "#2563EB",
+          "hover": "#1D4ED8",
+          "subtle_bg": "#EEF2FF",
+          "on_primary": "#FFFFFF",
+          "description": "Used for main CTAs, active indicators, and key highlights."
+        },
+        "accent": {
+          "yellow": "#FACC15",
+          "purple": "#A855F7",
+          "sky": "#0EA5E9",
+          "description": "Used sparingly in illustrations, badges, and avatar accents to keep the interface lively."
+        },
+        "semantic": {
+          "success": {
+            "base": "#16A34A",
+            "bg": "#DCFCE7"
+          },
+          "danger": {
+            "base": "#DC2626",
+            "bg": "#FEE2E2"
+          },
+          "warning": {
+            "base": "#D97706",
+            "bg": "#FEF3C7"
+          },
+          "info": {
+            "base": "#0EA5E9",
+            "bg": "#E0F2FE"
+          }
+        },
+        "neutral": {
+          "background": "#F5F6FA",
+          "surface": "#FFFFFF",
+          "sidebar_bg": "#111827",
+          "sidebar_bg_soft": "#1F2933",
+          "sidebar_divider": "#1F2933",
+          "border_subtle": "#E5E7EB",
+          "border_strong": "#D1D5DB",
+          "text_strong": "#111827",
+          "text_default": "#374151",
+          "text_muted": "#6B7280",
+          "text_on_dark": "#F9FAFB",
+          "icon_muted": "#9CA3AF",
+          "row_hover": "#F3F4F6",
+          "card_subtle_bg": "#F9FAFB"
+        }
+      },
+      "usage_guidelines": {
+        "page_background": "Use neutral.background for everything outside the main content shell.",
+        "card_background": "Use neutral.surface; avoid colored card backgrounds except for small stat pills or tags.",
+        "text": "Use neutral.text_strong for key numbers and titles, text_default for standard body, and text_muted for supporting labels or meta info.",
+        "sidebar": "Use neutral.sidebar_bg for the main sidebar, with text_on_dark and icon_muted for labels and icons. The active item gets a primary-colored left indicator.",
+        "status_text": "Use semantic.success.base for positive numbers and semantic.danger.base for negative values. Pair with small + or - prefixes.",
+        "borders": "Use neutral.border_subtle for card outlines only when necessary; prefer shadow and elevation over heavy borders.",
+        "hover_states": "Use row_hover for hover on rows and list items. For primary buttons, move from primary.base to primary.hover."
+      }
+    },
+    "typography": {
+      "font_family_stack": "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif",
+      "weights": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "text_styles": {
+        "page_title": {
+          "font_size": 24,
+          "line_height": 32,
+          "weight": "semibold",
+          "letter_spacing": -0.01,
+          "description": "Used for greetings like 'Hey there, Brian Ford!'."
+        },
+        "section_title": {
+          "font_size": 18,
+          "line_height": 24,
+          "weight": "semibold",
+          "letter_spacing": -0.01
+        },
+        "card_title": {
+          "font_size": 16,
+          "line_height": 22,
+          "weight": "medium"
+        },
+        "nav_label": {
+          "font_size": 14,
+          "line_height": 20,
+          "weight": "medium",
+          "case": "sentence",
+          "color": "neutral.text_on_dark"
+        },
+        "nav_section_label": {
+          "font_size": 11,
+          "line_height": 16,
+          "weight": "medium",
+          "tracking": 0.12,
+          "case": "uppercase",
+          "color": "rgba(249,250,251,0.45)"
+        },
+        "body_default": {
+          "font_size": 14,
+          "line_height": 20,
+          "weight": "regular"
+        },
+        "body_small": {
+          "font_size": 12,
+          "line_height": 16,
+          "weight": "regular"
+        },
+        "data_number_large": {
+          "font_size": 28,
+          "line_height": 32,
+          "weight": "semibold",
+          "tabular_numbers": true,
+          "description": "Key KPI numbers in the top stat cards."
+        },
+        "data_number_medium": {
+          "font_size": 18,
+          "line_height": 24,
+          "weight": "medium",
+          "tabular_numbers": true
+        },
+        "button_label": {
+          "font_size": 14,
+          "line_height": 20,
+          "weight": "medium"
+        },
+        "breadcrumb": {
+          "font_size": 12,
+          "line_height": 16,
+          "weight": "regular",
+          "color": "neutral.text_muted"
+        },
+        "metric_delta": {
+          "font_size": 12,
+          "line_height": 16,
+          "weight": "medium",
+          "color_success": "semantic.success.base",
+          "color_danger": "semantic.danger.base"
+        }
+      }
+    },
+    "radii": {
+      "none": 0,
+      "sm": 4,
+      "md": 8,
+      "lg": 12,
+      "xl": 16,
+      "2xl": 20,
+      "pill": 999,
+      "usage_guidelines": {
+        "shell": "Use 2xl for the main white content shell.",
+        "cards": "Use xl for primary cards and metrics cards.",
+        "table_rows": "Rows remain mostly square; apply md radius on hover if they become clickable.",
+        "chips_and_badges": "Use pill for rounded tags and metric pills.",
+        "buttons": "Use lg to create soft rounded rectangles."
+      }
+    },
+    "shadows": {
+      "shadow-elevation-1": {
+        "value": "0 1px 2px rgba(15, 23, 42, 0.08)",
+        "usage": "Small elements like dropdowns or simple cards."
+      },
+      "shadow-elevation-2": {
+        "value": "0 10px 30px rgba(15, 23, 42, 0.10)",
+        "usage": "Main content shell and prominent cards."
+      },
+      "shadow-elevation-3": {
+        "value": "0 20px 45px rgba(15, 23, 42, 0.14)",
+        "usage": "Modal dialogs or surfaces that should sit clearly above the page."
+      }
+    },
+    "iconography": {
+      "style": "simple 1px or 1.5px stroke icons, rounded corners, no filled heavy glyphs.",
+      "size_default": 18,
+      "size_small": 14,
+      "size_large": 24,
+      "color_on_light": "neutral.icon_muted",
+      "color_on_dark": "rgba(249,250,251,0.80)",
+      "usage": "Icons support text labels and never replace them in navigation."
+    },
+    "borders": {
+      "width_default": 1,
+      "radius_for_inputs": "md",
+      "color_default": "neutral.border_subtle",
+      "description": "Borders are used sparingly; prefer soft background fills and shadows instead of thick outlines."
+    }
+  },
+  "layout": {
+    "app_shell": {
+      "has_fixed_sidebar": true,
+      "sidebar_width": 240,
+      "sidebar_background": "neutral.sidebar_bg",
+      "sidebar_alignment": "left",
+      "main_panel": {
+        "background": "neutral.background",
+        "padding": "3xl",
+        "description": "Main panel scrolls independently from the fixed sidebar."
+      }
+    },
+    "top_bar": {
+      "height": 56,
+      "has_breadcrumbs": true,
+      "breadcrumb_to_title_spacing": "sm",
+      "has_secondary_actions": true,
+      "alignment": "title_left_actions_right",
+      "description": "Breadcrumbs and greeting text on the left, contextual actions (Edit, Add item, overflow) on the right."
+    },
+    "content_sections": [
+      {
+        "name": "kpi_row",
+        "columns": 3,
+        "description": "Three side-by-side stat cards, each describing a tool (Slack, Sketch, MailChimp) with KPI and status."
+      },
+      {
+        "name": "main_plus_sidebar",
+        "description": "Below KPI row, a two-column layout: wide main column (~70%) with transactions table and chart, right column (~30%) with a promo/CTA card.",
+        "main_width_fraction": 0.7,
+        "side_width_fraction": 0.3,
+        "gap": "2xl"
+      }
+    ]
+  },
+  "components": {
+    "Sidebar": {
+      "role": "primary_navigation",
+      "background_color": "neutral.sidebar_bg",
+      "width": 240,
+      "padding_x": "xl",
+      "padding_y": "2xl",
+      "sections": [
+        "User Profile",
+        "Primary Nav (Analysis)",
+        "Data Management",
+        "Administration"
+      ],
+      "elevation": "flat",
+      "border_right": "none",
+      "description": "Dark vertical bar containing the user identity and all navigation. Text is light with a slightly bluish tint; active item has a bright blue indicator."
+    },
+    "SidebarUserProfile": {
+      "elements": [
+        "Avatar (circle, 32x32)",
+        "User name",
+        "Email"
+      ],
+      "alignment": "horizontal",
+      "avatar_size": 32,
+      "spacing": "md",
+      "text_style_name": "body_small_on_dark",
+      "description": "Appears at top of sidebar; gives the app a personal, welcoming touch."
+    },
+    "SidebarNavSectionLabel": {
+      "text_style": "nav_section_label",
+      "padding_top": "2xl",
+      "padding_bottom": "sm",
+      "description": "Uppercase label like 'ANALYSIS', 'DATA MANAGEMENT', 'ADMINISTRATION'."
+    },
+    "SidebarNavItem": {
+      "height": 32,
+      "padding_x": "md",
+      "border_radius": "md",
+      "icon_size": 18,
+      "gap": "md",
+      "typography": "nav_label",
+      "default_state": {
+        "background": "transparent",
+        "icon_color": "rgba(156,163,175,0.9)",
+        "text_color": "neutral.text_on_dark"
+      },
+      "hover_state": {
+        "background": "rgba(31,41,55,0.9)"
+      },
+      "active_state": {
+        "background": "rgba(17,24,39,1)",
+        "left_indicator": {
+          "width": 3,
+          "radius": "pill",
+          "color": "primary.base"
+        },
+        "text_color": "#FFFFFF",
+        "icon_color": "#FFFFFF"
+      }
+    },
+    "Breadcrumbs": {
+      "items_separator": "/",
+      "typography": "breadcrumb",
+      "color_default": "neutral.text_muted",
+      "active_color": "neutral.text_default",
+      "spacing_between_items": "sm",
+      "description": "Compact breadcrumb above page title, e.g., Home / Settings / General."
+    },
+    "PageHeader": {
+      "title_style": "page_title",
+      "subtitle_style": "body_small",
+      "vertical_spacing": "sm",
+      "description": "Greeting line and supporting copy under breadcrumbs."
+    },
+    "Button": {
+      "sizes": {
+        "sm": {
+          "height": 28,
+          "padding_x": 10,
+          "font_style": "button_label"
+        },
+        "md": {
+          "height": 36,
+          "padding_x": 16,
+          "font_style": "button_label"
+        }
+      },
+      "variants": {
+        "primary": {
+          "background": "primary.base",
+          "background_hover": "primary.hover",
+          "text_color": "primary.on_primary",
+          "border": "none",
+          "shadow": "shadow-elevation-1",
+          "description": "Used for main CTAs like 'Add item' or 'Let's Proceed'."
+        },
+        "secondary": {
+          "background": "neutral.surface",
+          "text_color": "neutral.text_default",
+          "border_color": "neutral.border_subtle",
+          "border_width": 1
+        },
+        "ghost": {
+          "background": "transparent",
+          "text_color": "neutral.text_default",
+          "hover_bg": "row_hover"
+        },
+        "on_dark": {
+          "background": "rgba(31,41,55,1)",
+          "text_color": "neutral.text_on_dark"
+        }
+      },
+      "border_radius": "lg"
+    },
+    "IconButton": {
+      "size": 32,
+      "shape": "rounded",
+      "icon_only": true,
+      "background_default": "neutral.surface",
+      "background_hover": "row_hover",
+      "border_radius": "lg",
+      "description": "Circular or softly rounded icon button used for overflow menus (three dots)."
+    },
+    "KpiStatCard": {
+      "layout": "horizontal",
+      "background": "neutral.surface",
+      "border_radius": "xl",
+      "padding_x": "2xl",
+      "padding_y": "lg",
+      "shadow": "shadow-elevation-1",
+      "sections": [
+        "App identity (icon + name)",
+        "Main KPI amount",
+        "Delta vs previous period",
+        "Status pill (e.g., Offline)"
+      ],
+      "typography": {
+        "label": "body_small",
+        "amount": "data_number_large",
+        "delta": "metric_delta",
+        "status": "body_small"
+      },
+      "status_pill": {
+        "background": "neutral.card_subtle_bg",
+        "text_color": "neutral.text_muted",
+        "radius": "pill",
+        "padding_x": "md",
+        "padding_y": "xs"
+      },
+      "description": "Compact card showing a channel (Slack, Sketch, MailChimp) with its current revenue and a small trend indicator."
+    },
+    "StatDelta": {
+      "format": "+0,000.00",
+      "positive_color": "semantic.success.base",
+      "negative_color": "semantic.danger.base",
+      "icon": "optional_chevron_or_arrow",
+      "placement": "below_main_number",
+      "description": "Small line under each KPI; consistently uses + or - signs."
+    },
+    "Table": {
+      "header_background": "neutral.surface",
+      "row_background": "neutral.surface",
+      "row_hover_background": "row_hover",
+      "border_collapse": "separate",
+      "outer_border_color": "neutral.border_subtle",
+      "header_typography": "body_small",
+      "cell_typography": "body_small",
+      "row_height": 44,
+      "header_height": 36,
+      "padding_x": "lg",
+      "padding_y": "sm",
+      "striping": "none",
+      "description": "Transactions table with clear columns: Name (with avatar), Amount (colored +/-), Account (with small account chip and chevron)."
+    },
+    "TableRow": {
+      "has_divider": true,
+      "divider_color": "neutral.border_subtle",
+      "divider_position": "bottom",
+      "hover_state": {
+        "background": "row_hover",
+        "cursor": "pointer"
+      },
+      "selected_state": {
+        "background": "neutral.card_subtle_bg",
+        "left_indicator": null
+      }
+    },
+    "Avatar": {
+      "shape": "circle",
+      "sizes": {
+        "sm": 24,
+        "md": 32,
+        "lg": 40
+      },
+      "border": "none",
+      "fallback_backgrounds": [
+        "#F97316",
+        "#EC4899",
+        "#6366F1",
+        "#10B981",
+        "#F59E0B"
+      ],
+      "description": "Colorful circular avatars used both in the sidebar profile and in the transactions table."
+    },
+    "Tag": {
+      "shape": "pill",
+      "padding_x": "md",
+      "padding_y": "xs",
+      "font_style": "body_small",
+      "variants": {
+        "neutral": {
+          "background": "neutral.card_subtle_bg",
+          "text_color": "neutral.text_muted"
+        },
+        "success": {
+          "background": "semantic.success.bg",
+          "text_color": "semantic.success.base"
+        },
+        "danger": {
+          "background": "semantic.danger.bg",
+          "text_color": "semantic.danger.base"
+        }
+      }
+    },
+    "CTAAsideCard": {
+      "background": "neutral.surface",
+      "border_radius": "xl",
+      "padding_x": "2xl",
+      "padding_y": "2xl",
+      "shadow": "shadow-elevation-1",
+      "layout": "vertical",
+      "elements": [
+        "Headline",
+        "Supporting copy",
+        "Primary button",
+        "Illustration"
+      ],
+      "alignment": "center",
+      "description": "Right-hand promotional card such as 'Kickstart Your Mobile Application' with a blue primary button and playful line illustration."
+    },
+    "Pagination": {
+      "size": "sm",
+      "alignment": "space_between",
+      "elements": [
+        "Prev text button",
+        "Page indicator (e.g., 'Page 1 to 8')",
+        "Next text button"
+      ],
+      "description": "Lightweight pagination under tables, no heavy background."
+    },
+    "AdvancedGraphicPlaceholder": {
+      "background": "neutral.surface",
+      "border_radius": "xl",
+      "padding_x": "2xl",
+      "padding_y": "lg",
+      "shadow": "shadow-elevation-1",
+      "description": "Container for charts or advanced graphs below the transactions table. Charts should follow the same color rules: primary blue for main series, grays for axes, soft fills."
+    }
+  }
+}
+
+
