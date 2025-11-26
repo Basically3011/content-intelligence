@@ -4,23 +4,38 @@ version: '3.8'
 # Content Intelligence - Docker Compose for Unraid
 # =============================================================================
 #
-# SETUP:
-# 1. Create a folder on Unraid: /mnt/user/appdata/content-intelligence/
-# 2. Copy this file there as docker-compose.yml
-# 3. Create a .env file in the same folder with your credentials (see below)
-# 4. Run: docker compose up -d --build
+# SETUP FOR PRIVATE REPO:
+# 1. Clone the repo on Unraid:
+#    cd /mnt/user/appdata
+#    git clone https://github.com/Basically3011/content-intelligence.git
+#    (You'll be prompted for GitHub username and Personal Access Token)
+#
+# 2. Create a .env file in the cloned folder:
+#    nano /mnt/user/appdata/content-intelligence/.env
+#
+# 3. Build and start:
+#    cd /mnt/user/appdata/content-intelligence
+#    docker compose -f docker-compose.unraid.yml up -d --build
+#
+# TO UPDATE:
+#    cd /mnt/user/appdata/content-intelligence
+#    git pull
+#    docker compose -f docker-compose.unraid.yml up -d --build
 #
 # .env file content:
-# DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@10.50.50.10:6543/content_intelligence?schema=public
-# DIRECT_URL=postgresql://postgres:YOUR_PASSWORD@10.50.50.10:6543/content_intelligence?schema=public
+# DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@pgvector:5432/content_intelligence?schema=public
+# DIRECT_URL=postgresql://postgres:YOUR_PASSWORD@pgvector:5432/content_intelligence?schema=public
 # NEXT_PUBLIC_APP_URL=http://YOUR_UNRAID_IP:3000
+#
+# NOTE: The database hostname should be the container name of your pgvector
+#       database in the proxnet network (e.g., pgvector, postgres, etc.)
 #
 # =============================================================================
 
 services:
   content-intelligence:
     build:
-      context: https://github.com/Basically3011/content-intelligence.git#main
+      context: .
       dockerfile: Dockerfile
     container_name: content-intelligence
     image: content-intelligence:latest
@@ -49,6 +64,11 @@ services:
       - "net.unraid.docker.managed=dockerman"
       - "net.unraid.docker.webui=http://[IP]:[PORT:3000]"
 
+    # Connect to existing proxnet network where pgvector database runs
+    networks:
+      - proxnet
+
+# Use existing external network (proxnet) where pgvector is running
 networks:
-  default:
-    driver: bridge
+  proxnet:
+    external: true
