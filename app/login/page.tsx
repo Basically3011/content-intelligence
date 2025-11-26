@@ -17,25 +17,33 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('[Login] Form submitted, username:', username)
     setError('')
     setIsLoading(true)
 
     try {
+      console.log('[Login] Sending request to /api/auth/login')
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
+        credentials: 'same-origin',
       })
 
+      console.log('[Login] Response status:', response.status)
       const data = await response.json()
+      console.log('[Login] Response data:', data)
 
       if (response.ok) {
+        console.log('[Login] Login successful, redirecting...')
         router.push('/')
         router.refresh()
       } else {
+        console.log('[Login] Login failed:', data.error)
         setError(data.error || 'Login failed')
       }
-    } catch {
+    } catch (err) {
+      console.error('[Login] Error:', err)
       setError('An error occurred. Please try again.')
     } finally {
       setIsLoading(false)
