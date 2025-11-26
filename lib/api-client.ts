@@ -1,8 +1,11 @@
 /**
  * Frontend API client for fetching data
+ *
+ * Uses relative URLs so the browser automatically uses the current host.
+ * This avoids CORS issues and works in any environment (dev, Docker, etc.)
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+const API_BASE = ''
 
 export interface ContentStats {
   total: number
