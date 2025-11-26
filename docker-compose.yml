@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  content-intelligence:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: content-intelligence
+    image: content-intelligence:latest
+    
+    ports:
+      - "3000:3000"
+    
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - DIRECT_URL=${DIRECT_URL}
+      - NEXT_TELEMETRY_DISABLED=1
+    
+    env_file:
+      - .env
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    networks:
+      - content-intelligence-network
+    
+    # Optional: Add labels for better management in Unraid
+    labels:
+      - "com.content-intelligence.description=Content Intelligence Dashboard"
+      - "com.content-intelligence.version=1.0"
+
+networks:
+  content-intelligence-network:
+    driver: bridge
+
