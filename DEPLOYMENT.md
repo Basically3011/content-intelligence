@@ -58,17 +58,27 @@ Speichere die Datei (`Ctrl+X`, dann `Y`, dann `Enter`).
 
 **Wichtig:** Führe die Datenbank-Migrationen aus, bevor du den Container startest:
 
+**Hinweis zu Prisma 7:** Dieses Projekt verwendet Prisma 7, welches eine neue Konfigurationsdatei `prisma.config.ts` im Root-Verzeichnis benötigt. Die Datenbank-URLs sind jetzt in dieser Datei konfiguriert statt direkt im `schema.prisma`.
+
 ```bash
 # Option A: Mit Node lokal (falls installiert)
-npx prisma migrate deploy
+# Stelle sicher, dass .env geladen ist
+set -a && source .env && set +a
+npx prisma db push
 
-# Option B: Mit temporärem Docker Container
+# Option B: Mit temporärem Docker Container (Prisma 7)
 docker run --rm \
-  -v $(pwd)/prisma:/app/prisma \
+  -v $(pwd):/app \
+  -w /app \
   --env-file .env \
   node:20-alpine \
-  sh -c "npm install -g prisma && prisma migrate deploy"
+  sh -c "npm install && npx prisma db push"
 ```
+
+**Prisma 7 Änderungen:**
+- Die Datenbank-URLs (`DATABASE_URL` und `DIRECT_URL`) werden jetzt in `prisma.config.ts` konfiguriert
+- Das `schema.prisma` enthält nur noch die Provider-Definition
+- Verwende `prisma db push` statt `prisma migrate deploy` wenn keine Migrations-History existiert
 
 ### 4. Docker Image bauen und Container starten
 
@@ -136,12 +146,14 @@ docker-compose up -d
 Falls das Update neue Datenbank-Änderungen enthält:
 
 ```bash
-# Prüfe ob neue Migrationen vorhanden sind
-docker-compose exec content-intelligence npx prisma migrate status
+# Mit Prisma 7: Schema mit Datenbank synchronisieren
+docker-compose exec content-intelligence npx prisma db push
 
-# Falls nötig, Migrationen ausführen
-docker-compose exec content-intelligence npx prisma migrate deploy
+# Alternativ: Prisma Client neu generieren
+docker-compose exec content-intelligence npx prisma generate
 ```
+
+**Hinweis:** Bei Prisma 7 wird `prisma db push` verwendet, um das Schema mit der Datenbank zu synchronisieren.
 
 ## Wartung
 

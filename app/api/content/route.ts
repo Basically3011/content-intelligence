@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
       has_url_issues: searchParams.get('has_url_issues') === 'true' ? true : searchParams.get('has_url_issues') === 'false' ? false : undefined,
 
       // Date Range Filters
-      date_field: (dateField === 'cms_created_at' || dateField === 'cms_updated_at') ? dateField : undefined,
+      date_field: (dateField === 'cms_created_at' || dateField === 'cms_updated_at') ? dateField as 'cms_created_at' | 'cms_updated_at' : undefined,
       date_from: searchParams.get('date_from') || undefined,
       date_to: searchParams.get('date_to') || undefined,
 
@@ -108,8 +108,8 @@ export async function GET(request: NextRequest) {
       score_ranges: searchParams.get('score_ranges')?.split(',') || undefined,
 
       // Sorting
-      sort_by: (sortBy === 'cms_created_at' || sortBy === 'cms_updated_at') ? sortBy : undefined,
-      sort_order: (sortOrder === 'asc' || sortOrder === 'desc') ? sortOrder : undefined,
+      sort_by: (sortBy === 'cms_created_at' || sortBy === 'cms_updated_at') ? sortBy as 'cms_created_at' | 'cms_updated_at' : undefined,
+      sort_order: (sortOrder === 'asc' || sortOrder === 'desc') ? sortOrder as 'asc' | 'desc' : undefined,
     }
 
     const result = await getContentItems(filters, page, limit)

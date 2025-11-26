@@ -71,11 +71,14 @@ export async function PATCH(request: NextRequest) {
       updateData.cms_actions_updated_at = new Date()
     }
 
+    // Convert string IDs to BigInt for database query
+    const bigIntIds = inventoryIds.map(id => BigInt(id))
+
     // Update all items in a transaction
     const updateResult = await prisma.content_inventory.updateMany({
       where: {
         inventory_id: {
-          in: inventoryIds,
+          in: bigIntIds,
         },
       },
       data: updateData,
@@ -85,7 +88,7 @@ export async function PATCH(request: NextRequest) {
     const updatedItems = await prisma.content_inventory.findMany({
       where: {
         inventory_id: {
-          in: inventoryIds,
+          in: bigIntIds,
         },
       },
       select: {

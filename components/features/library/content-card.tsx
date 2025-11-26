@@ -29,7 +29,7 @@ export function ContentCard({ item, onClick, viewMode = 'grid' }: ContentCardPro
     return { label: 'Poor', variant: 'destructive' as const, color: 'bg-red-500/10 text-red-700 border-red-500/20' }
   }
 
-  const scoreInfo = getScoreInfo(overallScore)
+  const scoreInfo = getScoreInfo(overallScore ?? null)
 
   // Content status badges with icons
   const contentStatusBadges = []

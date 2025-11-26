@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { Prisma } from '@prisma/client'
 
 function serializeBigInt(obj: any): any {
   if (obj === null || obj === undefined) return obj
@@ -30,15 +31,16 @@ function serializeBigInt(obj: any): any {
 export async function GET() {
   try {
     // Check how many scoring records exist with strengths/weaknesses
+    // Use raw query for JSON null checking since Prisma's JSON filters are complex
     const withStrengths = await prisma.content_scoring.count({
       where: {
-        audit_primary_strengths: { not: null }
+        audit_primary_strengths: { not: Prisma.DbNull }
       }
     })
 
     const withWeaknesses = await prisma.content_scoring.count({
       where: {
-        audit_critical_weaknesses: { not: null }
+        audit_critical_weaknesses: { not: Prisma.DbNull }
       }
     })
 
@@ -52,8 +54,8 @@ export async function GET() {
     const sample = await prisma.content_scoring.findFirst({
       where: {
         OR: [
-          { audit_primary_strengths: { not: null } },
-          { audit_critical_weaknesses: { not: null } }
+          { audit_primary_strengths: { not: Prisma.DbNull } },
+          { audit_critical_weaknesses: { not: Prisma.DbNull } }
         ]
       },
       select: {

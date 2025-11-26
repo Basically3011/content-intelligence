@@ -1,38 +1,39 @@
 # Multi-stage Dockerfile for Content Intelligence App
-# Optimized for Unraid deployment with GitHub-based build
+# Optimized for Unraid deployment
 
 # Stage 1: Dependencies
 FROM node:20-alpine AS deps
-RUN apk add --no-cache libc6-compat git
+RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
-# Clone the repository
-RUN git clone https://github.com/Basically3011/content-intelligence.git .
+# Copy package files
+COPY package.json package-lock.json ./
+COPY prisma ./prisma/
 
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production && \
-    npm cache clean --force
-
-# Stage 2: Builder
-FROM node:20-alpine AS builder
-RUN apk add --no-cache git libc6-compat openssl
-
-WORKDIR /app
-
-# Clone the repository fresh for build stage
-RUN git clone https://github.com/Basically3011/content-intelligence.git .
-
-# Install all dependencies (including devDependencies)
+# Install dependencies
 RUN npm ci
 
 # Generate Prisma Client
 RUN npx prisma generate
 
-# Build Next.js application with standalone output
-# This creates a minimal production build
-ENV NEXT_TELEMETRY_DISABLED 1
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build Next.js application
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# Skip database connection during build
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
 RUN npm run build
 
 # Stage 3: Production Runner

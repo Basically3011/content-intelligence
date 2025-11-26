@@ -131,7 +131,7 @@ export async function getCoverageHeatmap(filters?: CoverageFilters): Promise<Cov
       if (!countMap.has(key)) {
         countMap.set(key, new Set<string>())
       }
-      countMap.get(key)!.add(mapping.inventory_id)
+      countMap.get(key)!.add(mapping.inventory_id.toString())
     }
   })
 

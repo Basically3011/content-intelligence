@@ -499,7 +499,7 @@ export async function getUniqueBuyingStages() {
  * Returns simplified data for classification table
  */
 export async function getClassificationItems(
-  filters?: ContentFilters & {
+  filters?: Omit<ContentFilters, 'sort_by' | 'sort_order'> & {
     inventory_id?: string
     node_id?: string
     ann_stage?: string

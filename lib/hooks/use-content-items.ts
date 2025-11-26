@@ -29,6 +29,11 @@ interface UseContentItemsParams {
   pdg_stage_is_null?: boolean
   pdg_stage_is_not_null?: boolean
 
+  // Content Mix Category Filters
+  content_mix_categories?: string[]
+  content_mix_is_null?: boolean
+  content_mix_is_not_null?: boolean
+
   // Date Range Filters
   date_field?: 'cms_created_at' | 'cms_updated_at'
   date_from?: string

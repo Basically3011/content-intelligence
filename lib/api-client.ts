@@ -311,6 +311,7 @@ export interface FilterOptions {
   contentTypes: string[]
   languages: string[]
   pdgStages: string[]
+  contentMixCategories: string[]
 }
 
 /**
