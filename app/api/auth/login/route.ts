@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { validateCredentials, generateSessionToken, setSessionCookie } from '@/lib/auth'
+import { validateCredentials, generateSessionToken, createSessionHash, SESSION_COOKIE, SESSION_DURATION } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   console.log('[API Login] Request received')
@@ -28,13 +28,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate session token and set cookie
+    // Generate session token
     console.log('[API Login] Credentials valid, generating token...')
     const token = generateSessionToken()
-    await setSessionCookie(token)
+    const hash = createSessionHash(token)
+    const cookieValue = `${token}.${hash}`
 
-    console.log('[API Login] Login successful')
-    return NextResponse.json({ success: true })
+    // Create response with cookie
+    const response = NextResponse.json({ success: true })
+
+    // Set cookie directly on response
+    response.cookies.set(SESSION_COOKIE, cookieValue, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: SESSION_DURATION / 1000,
+      path: '/',
+    })
+
+    console.log('[API Login] Login successful, cookie set')
+    return response
   } catch (error) {
     console.error('[API Login] Error:', error)
     return NextResponse.json(
