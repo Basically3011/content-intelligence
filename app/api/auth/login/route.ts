@@ -38,9 +38,11 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ success: true })
 
     // Set cookie directly on response
+    // Note: secure should only be true when using HTTPS
+    const isHttps = process.env.NEXT_PUBLIC_APP_URL?.startsWith('https://') ?? false
     response.cookies.set(SESSION_COOKIE, cookieValue, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'lax',
       maxAge: SESSION_DURATION / 1000,
       path: '/',

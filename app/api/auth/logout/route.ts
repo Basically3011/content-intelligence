@@ -6,9 +6,10 @@ export async function POST() {
     const response = NextResponse.json({ success: true })
 
     // Delete cookie by setting it with maxAge 0
+    const isHttps = process.env.NEXT_PUBLIC_APP_URL?.startsWith('https://') ?? false
     response.cookies.set(SESSION_COOKIE, '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: isHttps,
       sameSite: 'lax',
       maxAge: 0,
       path: '/',
