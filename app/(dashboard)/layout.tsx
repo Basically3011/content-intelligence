@@ -1,6 +1,11 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 
+// Force dynamic rendering for all dashboard pages
+// This prevents Next.js from trying to statically generate pages during build
+// which would fail because pages use useSearchParams and database calls
+export const dynamic = 'force-dynamic'
+
 export default function DashboardLayout({
   children,
 }: {

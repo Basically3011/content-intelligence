@@ -15,7 +15,7 @@ const routeNames: Record<string, string> = {
 };
 
 export function Header() {
-  const pathname = usePathname();
+  const pathname = usePathname() || '/';
   const currentRoute = routeNames[pathname] || 'Dashboard';
 
   const getBreadcrumbs = () => {

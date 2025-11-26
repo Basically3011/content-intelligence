@@ -63,6 +63,8 @@ export default function LibraryPage() {
 
   // Read URL parameters and set filters on initial load
   useEffect(() => {
+    if (!searchParams) return
+
     const persona = searchParams.get('persona')
     const stage = searchParams.get('stage')
     const language = searchParams.get('language')

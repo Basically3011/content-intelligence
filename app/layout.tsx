@@ -4,6 +4,10 @@ import "./globals.css";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { Toaster } from "@/components/ui/toaster";
 
+// Force dynamic rendering for all pages - prevents static generation during build
+// which would fail because pages use client-side hooks and require database access
+export const dynamic = 'force-dynamic'
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

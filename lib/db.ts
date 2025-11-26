@@ -11,11 +11,32 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-})
+// Check if we're in a build environment (no real database available)
+const isBuildTime = process.env.DATABASE_URL?.includes('placeholder') ||
+                    process.env.NEXT_PHASE === 'phase-production-build'
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+// Create a lazy-loading prisma client that only connects when actually used
+function createPrismaClient() {
+  if (isBuildTime) {
+    // Return a proxy that throws helpful errors during build
+    return new Proxy({} as PrismaClient, {
+      get(target, prop) {
+        if (prop === 'then' || prop === 'catch') return undefined
+        throw new Error(`Database not available during build. Attempted to access: ${String(prop)}`)
+      }
+    })
+  }
+
+  return new PrismaClient({
+    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+  })
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+
+if (process.env.NODE_ENV !== 'production' && !isBuildTime) {
+  globalForPrisma.prisma = prisma
+}
 
 // Type exports for convenience
 export type {
